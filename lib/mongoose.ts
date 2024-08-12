@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
 export const connectionToDatabase = async () => {
-  mongoose.set("strict", true);
-
   if (!process.env.MONGODB_URI) {
     return console.log("MISSING MONGODB_URI");
   }

@@ -24,6 +24,7 @@ export async function assignDriverToVehicle(params: any) {
     // Assign the driver to the vehicle
     driver.vehicle = vehicleId;
     vehicle.driver = driverId;
+    vehicle.available = false;
     await driver.save();
     await vehicle.save();
 

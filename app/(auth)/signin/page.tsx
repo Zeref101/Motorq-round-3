@@ -1,10 +1,10 @@
-import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 
 export default function SigninPage() {
     return (
         <div className=" flex justify-center items-center">
-            <RegisterLink>Sign up</RegisterLink>
+            <LoginLink>Sign up</LoginLink>
         </div>
     )
 }

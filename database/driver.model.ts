@@ -1,5 +1,5 @@
 import { IWorkingHours } from "@/types";
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Document, Model } from "mongoose";
 
 interface IDriver extends Document {
   name: string;
@@ -30,7 +30,7 @@ const WorkingHoursSchema = new Schema<IWorkingHours>({
 const DriverSchema = new Schema<IDriver>({
   name: { type: String, required: true },
   email: { type: String, required: true },
-  phone_number: { type: Number, required: true },
+  phone_number: { type: Number, required: false },
   location: { type: String, required: false },
   assigned_vehicle: {
     type: Schema.Types.ObjectId,
@@ -39,7 +39,7 @@ const DriverSchema = new Schema<IDriver>({
   },
   working_hours: { type: [WorkingHoursSchema], required: false },
 });
-
-const Driver = models.Driver || model("Driver", DriverSchema);
+const Driver: Model<IDriver> =
+  models?.Driver || model<IDriver>("Driver", DriverSchema);
 
 export default Driver;
