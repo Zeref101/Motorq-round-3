@@ -1,6 +1,12 @@
 import { IWorkingHours } from "@/types";
 import { Schema, models, model, Document, Model } from "mongoose";
 
+interface IAssignment {
+  vehicle: Schema.Types.ObjectId;
+  start_time: Date;
+  end_time: Date;
+}
+
 interface IDriver extends Document {
   name: string;
   email: string;
@@ -8,7 +14,10 @@ interface IDriver extends Document {
   location?: string;
   assigned_vehicle: Schema.Types.ObjectId;
   working_hours: IWorkingHours[];
+  assignments: IAssignment[];
+  assignment_requests: IAssignment[];
 }
+
 const WorkingHoursSchema = new Schema<IWorkingHours>({
   day: {
     type: String,
@@ -23,8 +32,14 @@ const WorkingHoursSchema = new Schema<IWorkingHours>({
       "Sunday",
     ],
   },
-  start: { type: String, required: true },
-  end: { type: String, required: true },
+  start: { type: Date, required: true },
+  end: { type: Date, required: true },
+});
+
+const AssignmentSchema = new Schema<IAssignment>({
+  vehicle: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
+  start_time: { type: Date, required: true },
+  end_time: { type: Date, required: true },
 });
 
 const DriverSchema = new Schema<IDriver>({
@@ -38,7 +53,10 @@ const DriverSchema = new Schema<IDriver>({
     required: false,
   },
   working_hours: { type: [WorkingHoursSchema], required: false },
+  assignments: { type: [AssignmentSchema], required: false },
+  assignment_requests: { type: [AssignmentSchema], required: false },
 });
+
 const Driver: Model<IDriver> =
   models?.Driver || model<IDriver>("Driver", DriverSchema);
 

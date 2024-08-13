@@ -1,4 +1,4 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Document, Model } from "mongoose";
 
 interface IVehicle extends Document {
   brand: string;
@@ -18,6 +18,7 @@ const VehicleSchema = new Schema<IVehicle>({
   transmission: { type: String, required: false },
 });
 
-const Vehicle = models.Vehicle || model("Vehicle", VehicleSchema);
+const Vehicle: Model<IVehicle> =
+  models?.Vehicle || model<IVehicle>("Vehicle", VehicleSchema);
 
 export default Vehicle;
