@@ -1,6 +1,7 @@
 "use server";
 import { connectionToDatabase } from "../mongoose";
 import Driver from "@/database/driver.model";
+import { Schema } from "mongoose";
 
 export async function getDriverByEmail(params: any) {
   try {
@@ -36,7 +37,12 @@ export async function createDriver(params: any) {
 
 export async function updateDriverByEmail(
   email: string,
-  updates: { name?: string; phone_number?: number; location?: string }
+  updates: {
+    name?: string;
+    phone_number?: number;
+    location?: string;
+    working_hours?: { day: string; start: string; end: string }[];
+  }
 ) {
   try {
     connectionToDatabase();
@@ -48,13 +54,12 @@ export async function updateDriverByEmail(
     if (!updatedDriver) {
       throw new Error("Driver not found");
     }
-    return updatedDriver;
+    return true;
   } catch (error) {
     console.error("Error in updateDriverByEmail:", error);
     throw new Error("Failed to update driver");
   }
 }
-
 export async function searchDrivers(query: string) {
   try {
     connectionToDatabase(); // Ensure the database connection is established
@@ -73,5 +78,77 @@ export async function searchDrivers(query: string) {
   } catch (error) {
     console.error("Error in searchDrivers:", error);
     throw new Error("Failed to search drivers");
+  }
+}
+
+export async function getAllDrivers() {
+  try {
+    connectionToDatabase();
+    const user = await Driver.find({});
+    return JSON.stringify(user);
+  } catch (error) {
+    console.error("Error in getDriverById:", error);
+    throw new Error("Failed to get driver by ID");
+  }
+}
+export async function AllDrivers() {
+  try {
+    await connectionToDatabase(); // Ensure the database connection is established
+    console.log("doneeeeeeeeeeeeeeeeeeee");
+    const drivers = await Driver.find({});
+    console.log(drivers);
+    return drivers;
+  } catch (error) {
+    console.error("Error in getAllDrivers:", error);
+    throw new Error("Failed to get all drivers");
+  }
+}
+interface IAssignment {
+  vehicle: Schema.Types.ObjectId;
+  start_time: Date;
+  end_time: Date;
+}
+
+export async function isDriverAvailable(
+  driverId: string,
+  startTime: Date,
+  endTime: Date
+): Promise<boolean> {
+  try {
+    connectionToDatabase(); // Ensure the database connection is established
+
+    const driver = await Driver.findById(driverId).populate(
+      "assignments.vehicle"
+    );
+    console.log(driver);
+    if (!driver) {
+      throw new Error("Driver not found");
+    }
+
+    const isAvailable = driver.assignments.every((assignment: IAssignment) => {
+      return (
+        endTime <= assignment.start_time || startTime >= assignment.end_time
+      );
+    });
+
+    return isAvailable;
+  } catch (error) {
+    console.error("Error in isDriverAvailable:", error);
+    throw new Error("Failed to check driver availability");
+  }
+}
+
+export async function getAllUsersWithVehicleAssignments() {
+  try {
+    await connectionToDatabase(); // Ensure the database connection is established
+
+    const users = await Driver.find({
+      "assignments.vehicle": { $exists: true },
+    }).populate("assignments.vehicle");
+
+    return JSON.stringify(users);
+  } catch (error) {
+    console.error("Error in getAllUsersWithVehicleAssignments:", error);
+    throw new Error("Failed to get users with vehicle assignments");
   }
 }
