@@ -1,3 +1,5 @@
+"use server";
+
 import { connectionToDatabase } from "../mongoose";
 import Vehicle from "@/database/vehicle.model";
 
@@ -27,5 +29,18 @@ export async function createVehicle(params: any) {
   } catch (error) {
     console.error("Error in createVehicle:", error);
     throw new Error("Failed to create vehicle");
+  }
+}
+export async function getAllVehicles() {
+  try {
+    connectionToDatabase();
+
+    // Fetch all vehicles
+    const vehicles = await Vehicle.find({});
+
+    return vehicles;
+  } catch (error) {
+    console.error("Error in getAllVehicles:", error);
+    throw new Error("Failed to fetch vehicles");
   }
 }
