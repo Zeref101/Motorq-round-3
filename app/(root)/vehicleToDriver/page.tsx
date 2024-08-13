@@ -1,10 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { getAllDrivers, isDriverAvailable } from '@/lib/actions/driver.action';
-
 import { assignDriverToVehicle } from '@/lib/actions/driverAndvehicle.action';
 import { Button } from '@/components/ui/button';
 import { getAllVehicles } from '@/lib/actions/vehicle.action';
+import { sendAssignmentRequest } from '@/lib/actions/driverRequest';
 
 interface Vehicle {
     _id: string;
@@ -23,6 +23,7 @@ interface Driver {
 }
 
 const AdminPage: React.FC = () => {
+    const [selectedDrivers, setSelectedDrivers] = useState<string[]>([]);
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
     const [vehicleDetails, setVehicleDetails] = useState<Vehicle | null>(null);
@@ -50,7 +51,6 @@ const AdminPage: React.FC = () => {
             });
     }, []);
 
-
     useEffect(() => {
         getAllDrivers()
             .then((data: string) => {
@@ -72,8 +72,39 @@ const AdminPage: React.FC = () => {
                 console.error("Error fetching drivers:", error);
             });
     }, []);
+    const handleDriverSelect = (driverId: string) => {
+        setSelectedDrivers(prevSelectedDrivers => {
+            if (prevSelectedDrivers.includes(driverId)) {
+                return prevSelectedDrivers.filter(id => id !== driverId);
+            } else {
+                return [...prevSelectedDrivers, driverId];
+            }
+        });
+    };
+    const handleSendRequestsForSelectedDrivers = async () => {
+        try {
+            if (!startTime || !endTime) {
+                alert('Please select both start and end times');
+                return;
+            }
 
+            const response = await sendAssignmentRequest({
+                driverIds: selectedDrivers,
+                vehicleId: selectedVehicle,
+                startTime,
+                endTime,
+            });
 
+            if (response) {
+                alert('Assignment requests sent successfully');
+            } else {
+                alert('Error sending assignment requests');
+            }
+        } catch (error) {
+            console.error("Error in handleSendRequestsForSelectedDrivers:", error);
+            alert('Error sending assignment requests');
+        }
+    };
     const handleVehicleSelect = (vehicleId: string) => {
         setSelectedVehicle(vehicleId);
         const vehicleDetails = vehicles.find(vehicle => vehicle._id === vehicleId);
@@ -81,7 +112,6 @@ const AdminPage: React.FC = () => {
             setVehicleDetails(vehicleDetails);
         }
     };
-
 
     const handleDriverAssign = async (driverId: string) => {
         try {
@@ -107,6 +137,31 @@ const AdminPage: React.FC = () => {
         } catch (error) {
             console.error("Error in handleDriverAssign:", error);
             alert('Error assigning driver');
+        }
+    };
+
+    const handleSendRequest = async (driverId: string) => {
+        try {
+            if (!startTime || !endTime) {
+                alert('Please select both start and end times');
+                return;
+            }
+
+            const response = await sendAssignmentRequest({
+                driverIds: [driverId],
+                vehicleId: selectedVehicle,
+                startTime,
+                endTime,
+            });
+
+            if (response) {
+                alert('Assignment request sent successfully');
+            } else {
+                alert('Error sending assignment request');
+            }
+        } catch (error) {
+            console.error("Error in handleSendRequest:", error);
+            alert('Error sending assignment request');
         }
     };
 
@@ -162,12 +217,15 @@ const AdminPage: React.FC = () => {
                         {drivers.map(driver => (
                             <>
                                 <div key={driver._id} className='p-3 flex justify-center items-center gap-8'>
+                                    <input type="checkbox" onChange={() => handleDriverSelect(driver._id)} checked={selectedDrivers.includes(driver._id)} />
                                     <p>{driver.name} - {driver.phone_number}</p>
                                     <Button onClick={() => handleDriverAssign(driver._id)} className=' bg-lime-500 text-black hover:bg-lime-700'>Assign</Button>
+                                    <Button onClick={() => handleSendRequest(driver._id)} className=' bg-blue-500 text-black hover:bg-blue-700'>Request</Button>
                                 </div>
                                 <hr />
                             </>
                         ))}
+                        <Button onClick={handleSendRequestsForSelectedDrivers} className=' bg-blue-500 text-black hover:bg-blue-700 mt-4'>Send Requests for Selected Drivers</Button>
                     </div>
                 )}
 
@@ -175,6 +233,5 @@ const AdminPage: React.FC = () => {
 
         </div>
     );
-};
-
+}
 export default AdminPage;

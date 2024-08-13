@@ -5,6 +5,7 @@ interface IAssignment {
   vehicle: Schema.Types.ObjectId;
   start_time: Date;
   end_time: Date;
+  status: string;
 }
 
 interface IDriver extends Document {
@@ -40,6 +41,12 @@ const AssignmentSchema = new Schema<IAssignment>({
   vehicle: { type: Schema.Types.ObjectId, ref: "Vehicle", required: true },
   start_time: { type: Date, required: true },
   end_time: { type: Date, required: true },
+  status: {
+    type: String,
+    required: true,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
 });
 
 const DriverSchema = new Schema<IDriver>({
@@ -54,7 +61,7 @@ const DriverSchema = new Schema<IDriver>({
   },
   working_hours: { type: [WorkingHoursSchema], required: false },
   assignments: { type: [AssignmentSchema], required: false },
-  assignment_requests: { type: [AssignmentSchema], required: false },
+  assignment_requests: { type: [AssignmentSchema], required: true }, // Ensure this field is required
 });
 
 const Driver: Model<IDriver> =

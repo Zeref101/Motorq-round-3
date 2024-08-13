@@ -7,6 +7,7 @@ interface IVehicle extends Document {
   fuel: string;
   available: boolean;
   transmission: string;
+  status: "pending" | "accepted" | "rejected"; // Add status field with specific values
 }
 
 const VehicleSchema = new Schema<IVehicle>({
@@ -16,6 +17,12 @@ const VehicleSchema = new Schema<IVehicle>({
   fuel: { type: String, required: false },
   available: { type: Boolean, required: false },
   transmission: { type: String, required: false },
+  status: {
+    type: String,
+    required: true,
+    enum: ["pending", "accepted", "rejected"], // Ensure status can only be one of these values
+    default: "pending", // Set default value to "pending"
+  },
 });
 
 const Vehicle: Model<IVehicle> =

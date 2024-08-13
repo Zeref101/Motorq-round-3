@@ -23,10 +23,16 @@ export async function createDriver(params: any) {
     // Check if a driver with the same email already exists
     const existingDriver = await Driver.findOne({ email });
     if (existingDriver) {
-      throw new Error("Driver with this email already exists");
+      return false;
     }
 
-    const newDriver = new Driver({ name, email, phone_number, location });
+    const newDriver = new Driver({
+      name,
+      email,
+      phone_number,
+      location,
+      assignment_requests: [], // Initialize assignment_requests as an empty array
+    });
     await newDriver.save();
     return newDriver;
   } catch (error) {
@@ -34,7 +40,6 @@ export async function createDriver(params: any) {
     throw new Error("Failed to create driver");
   }
 }
-
 export async function updateDriverByEmail(
   email: string,
   updates: {
@@ -150,5 +155,30 @@ export async function getAllUsersWithVehicleAssignments() {
   } catch (error) {
     console.error("Error in getAllUsersWithVehicleAssignments:", error);
     throw new Error("Failed to get users with vehicle assignments");
+  }
+}
+
+export async function advSearchDrivers(location: string) {
+  try {
+    await connectionToDatabase();
+    console.log(`Searching for drivers in location: ${location}`);
+
+    const drivers = await Driver.find({ location });
+    console.log(`Found drivers:`, drivers);
+
+    // Filter out drivers with scheduling conflicts
+    const availableDrivers = drivers.filter((driver) => {
+      console.log(`Checking assignments for driver: ${driver.name}`);
+      console.log(`Assignments:`, driver.assignments);
+
+      // Check if the driver has any assignments
+      return driver.assignments.length === 0;
+    });
+
+    console.log(`Available drivers:`, availableDrivers);
+    return JSON.stringify(availableDrivers);
+  } catch (error) {
+    console.error("Error searching for drivers:", error);
+    return [];
   }
 }

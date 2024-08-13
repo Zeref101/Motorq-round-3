@@ -1,8 +1,12 @@
+'use client';
 import Navbar from '@/components/Navbar/Navbar';
 import LeftSidebar from '@/components/Sidebar/LeftSidebar';
+import { getDriverByEmail } from '@/lib/actions/driver.action';
 import React from 'react'
 
 const layout = ({ children }: { children: React.ReactNode }) => {
+
+
     return (
         <main className="background-light850_dark100 relative">
             <div className=' mx-8 pt-2'>

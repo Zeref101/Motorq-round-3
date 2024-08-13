@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 // import Link from "next/link";
-import marker from "/public/icons/marker.png";
+import marker from "/public/icons/white-marker.png";
 
 const Navbar = () => {
     return (

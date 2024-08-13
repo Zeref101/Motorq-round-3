@@ -17,7 +17,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { updateDriverByEmail } from '@/lib/actions/driver.action';
+import { AllDrivers, getDriverByEmail, updateDriverByEmail } from '@/lib/actions/driver.action';
 
 const formSchema = z.object({
     name: z.string().max(50).optional(),
@@ -45,7 +45,6 @@ interface UserDetails {
 }
 const Page = () => {
 
-
     const [userdetails, setUserdetails] = React.useState<UserDetails>({
         name: '',
         phone_number: 0,
@@ -61,8 +60,6 @@ const Page = () => {
             console.log(user)
         }
     }, []);
-
-
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
