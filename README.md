@@ -1,5 +1,4 @@
 
-```markdown
 # Fleet Management System
 
 ## Overview
@@ -42,7 +41,6 @@ This Fleet Management System is a web application designed to manage and optimiz
 - Work hours definition for drivers during enrollment
 
 ## Project Structure
-```
 
 .
 ├── (auth)
@@ -76,7 +74,7 @@ This Fleet Management System is a web application designed to manage and optimiz
 ├── globals.css
 └── layout.tsx
 
-```
+
 
 ## Key Components
 
@@ -114,6 +112,6 @@ This Fleet Management System is a web application designed to manage and optimiz
 Nextjs, mongodb, typescript 
 
 
-```
+
 
 
