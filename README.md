@@ -98,33 +98,22 @@ This Fleet Management System is a web application designed to manage and optimiz
 - Email
 - Phone
 - Location (optional, used in Level 3)
-- (Additional attributes as required)
+- assignments
+- assignment_request
 
 ### Vehicle Entity
 - Vehicle ID (unique identifier)
-- Make and Model
+- brand
+- model_name
 - License Plate
-- (Additional attributes as required)
+- status
+- available 
 
-## Setup and Installation
-
-(Include steps to set up and run the project)
-
-## Usage
-
-(Provide instructions on how to use the different features of the application)
 
 ## Technologies Used
+Nextjs, mongodb, typescript 
 
-(List the main technologies, frameworks, and libraries used in the project)
 
-## Contributing
-
-(Guidelines for contributing to the project, if applicable)
-
-## License
-
-(Specify the license under which the project is released)
 ```
 
-This README provides a comprehensive overview of your Fleet Management System, including its features, project structure, key components, and main entities. You can further customize it by adding specific setup instructions, usage guidelines, technologies used, and any other relevant information for your project.
+
