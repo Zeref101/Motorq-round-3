@@ -1,4 +1,3 @@
-Here's a detailed README based on your project structure and requirements:
 
 ```markdown
 # Fleet Management System
